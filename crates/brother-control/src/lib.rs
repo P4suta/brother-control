@@ -1,0 +1,20 @@
+mod cancellation;
+pub mod cli;
+pub mod config;
+pub mod credentials;
+pub mod device;
+pub mod diagnose;
+pub mod discovery;
+pub mod firmware;
+pub mod inspection;
+pub mod ipp_adapter;
+pub mod mcp;
+pub mod service;
+pub mod settings;
+pub mod setup;
+pub mod snmp_adapter;
+pub mod types;
+pub mod web;
+pub mod web_settings;
+#[cfg(test)]
+mod web_tests;

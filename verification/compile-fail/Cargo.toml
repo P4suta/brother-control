@@ -1,0 +1,11 @@
+[package]
+name = "domain-construction-fixtures"
+version = "0.0.0"
+edition = "2024"
+publish = false
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+brother-core = { path = "../../crates/core" }
+
+[workspace]

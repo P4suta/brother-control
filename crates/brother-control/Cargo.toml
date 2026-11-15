@@ -1,0 +1,78 @@
+[package]
+name = "brother-control"
+version = "0.0.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[[bin]]
+name = "brotherctl"
+path = "src/main.rs"
+
+[dependencies]
+brother-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+clap = { version = "4.6.7", default-features = false, features = [
+  "std",
+  "derive",
+  "help",
+  "usage",
+  "error-context",
+  "suggestions",
+] }
+uuid = { version = "1.23.0", features = ["serde"] }
+ipp = { version = "8.0.0", default-features = false }
+hickory-proto = "0.26.3"
+snmp2 = { version = "0.5.3", default-features = false }
+reqwest = { version = "0.13.5", default-features = false, features = [
+  "blocking",
+  "rustls",
+  "native-tls",
+  "cookies",
+  "form",
+] }
+rpassword = "7.5.5"
+directories = "6.0.0"
+sha2 = "0.11.1"
+zeroize = "1.9.1"
+x509-parser = "0.18.1"
+scraper = { version = "0.29.0", default-features = false }
+rmcp = { version = "3.10.0", default-features = false, features = [
+  "server",
+  "transport-io",
+] }
+tokio = { version = "1.54.1", features = [
+  "rt-multi-thread",
+  "macros",
+  "signal",
+  "time",
+] }
+tempfile = "3.27.0"
+ctrlc = "3.5.2"
+
+[lints]
+workspace = true
+
+[target.'cfg(target_os = "macos")'.dependencies]
+security-framework = "3.7.0"
+
+[target.'cfg(any(target_os = "macos", target_os = "windows"))'.dependencies]
+keyring = "4.2.0"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+dbus-secret-service = { version = "4.1.0", features = [
+  "crypto-rust",
+  "vendored",
+] }
+
+[dev-dependencies]
+native-tls = "0.2.18"
+rcgen = { version = "0.14.10", default-features = false, features = [
+  "crypto",
+  "pem",
+  "aws_lc_rs",
+] }
+tempfile = "3.27.0"

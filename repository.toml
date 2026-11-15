@@ -1,0 +1,10 @@
+name = "brother-control"
+summary = "Manage Brother printer settings and status through a typed CLI and MCP server"
+install = """
+mise trust
+mise install rust
+mise x rust -- cargo install --locked --path crates/brother-control"""
+usage = """
+brotherctl settings list"""
+copyright = "Yasunobu"
+license = "MIT OR Apache-2.0"

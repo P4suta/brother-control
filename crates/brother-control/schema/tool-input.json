@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["operation"],
+  "properties": {
+    "operation": { "enum": ["status", "discover", "diagnose", "firmware_check", "reboot", "settings_list", "settings_get", "settings_export", "settings_diff", "settings_apply"] },
+    "host": { "type": "string" },
+    "hosts": { "type": "array", "maxItems": 256, "items": { "type": "string" } },
+    "port": { "type": "integer", "minimum": 1, "maximum": 65535, "default": 631 },
+    "resource": { "type": "string", "default": "/ipp/print" },
+    "timeout_ms": { "type": "integer", "minimum": 1, "maximum": 60000, "description": "Per-request timeout; defaults to 3000 for status/discovery and 15000 for management operations." },
+    "device": { "type": "string", "format": "uuid" },
+    "desired": { "type": "object", "additionalProperties": false, "required": ["values"], "properties": { "values": { "type": "array", "maxItems": 6, "items": { "$ref": "#/$defs/setting" } } } },
+    "difference": { "type": "object", "additionalProperties": false, "required": ["schema", "device", "changes"], "properties": {
+      "schema": { "const": 1 }, "device": { "type": "string", "format": "uuid" },
+      "changes": { "type": "array", "maxItems": 6, "items": { "type": "object", "additionalProperties": false, "required": ["before", "desired"], "properties": { "before": { "$ref": "#/$defs/setting" }, "desired": { "$ref": "#/$defs/setting" } } } }
+    } }
+  },
+  "oneOf": [
+    { "properties": { "operation": { "const": "reboot" } }, "required": ["device"], "propertyNames": { "enum": ["operation", "device"] } },
+    { "properties": { "operation": { "enum": ["status", "diagnose", "firmware_check"] } }, "required": ["host"] },
+    { "properties": { "operation": { "const": "discover" } } },
+    { "properties": { "operation": { "const": "settings_list" } } },
+    { "properties": { "operation": { "enum": ["settings_get", "settings_export"] } }, "required": ["device"] },
+    { "properties": { "operation": { "const": "settings_diff" } }, "required": ["device", "desired"] },
+    { "properties": { "operation": { "const": "settings_apply" } }, "required": ["device", "difference"] }
+  ],
+  "$defs": {
+    "setting": { "type": "object", "additionalProperties": false, "required": ["key", "value"], "properties": { "key": { "type": "string" }, "value": {} }, "oneOf": [
+      { "properties": { "key": { "const": "sleep" }, "value": { "type": "integer", "minimum": 0, "maximum": 50 } } },
+      { "properties": { "key": { "enum": ["toner_save", "quiet_mode"] }, "value": { "enum": ["off", "on"] } } },
+      { "properties": { "key": { "const": "duplex" }, "value": { "enum": ["off", "long_edge", "short_edge"] } } },
+      { "properties": { "key": { "const": "paper_size" }, "value": { "enum": ["a4", "a5", "a6", "letter", "legal", "executive", "b5", "b6"] } } },
+      { "properties": { "key": { "const": "paper_type" }, "value": { "enum": ["plain", "thin", "thick", "thicker", "recycled", "bond", "label", "envelope"] } } }
+    ] }
+  }
+}
