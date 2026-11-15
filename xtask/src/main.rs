@@ -1,6 +1,6 @@
 use std::{
     env, fmt, fs,
-    path::Path,
+    path::{Path, PathBuf},
     process::{Command, ExitCode},
 };
 mod codex;
@@ -100,6 +100,9 @@ fn source_policy(directory: &Path) -> Result<(), CheckError> {
 }
 
 fn compile_fail() -> Result<(), CheckError> {
+    let target = env::var_os("CARGO_TARGET_DIR")
+        .map_or_else(|| PathBuf::from("target"), PathBuf::from)
+        .join("compile-fail");
     for (name, diagnostic) in [
         ("valid", None),
         ("forge_identity", Some("error[E0603]")),
@@ -116,10 +119,9 @@ fn compile_fail() -> Result<(), CheckError> {
                 "--manifest-path",
                 "verification/compile-fail/Cargo.toml",
                 "--target-dir",
-                "target/compile-fail",
-                "--bin",
-                name,
             ])
+            .arg(&target)
+            .args(["--bin", name])
             .output()
             .map_err(|error| CheckError(error.to_string()))?;
         let stderr = String::from_utf8_lossy(&output.stderr);
